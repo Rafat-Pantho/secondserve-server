@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DdlMappings">
+    <mapping uuid="65edeb2b-fded-47b0-b557-556815d91537" name="secondserve_db@localhost">
+      <data-sources db="e5929324-4384-44a1-b876-8ee56fe23103" />
+    </mapping>
+  </component>
+</project>

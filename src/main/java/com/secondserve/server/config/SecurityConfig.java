@@ -27,12 +27,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
+                .cors(cors -> {}) // ✅ Enable CORS with your CorsConfig
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/food-items/available").permitAll()
-                        .requestMatchers("/api/hotels").permitAll()
-                        .requestMatchers("/api/ngos").permitAll()
+                        .requestMatchers("/auth/**").permitAll()             // ✅ Fixed
+                        .requestMatchers("/food-items/available").permitAll() // ✅ Fixed
+                        .requestMatchers("/hotels").permitAll()               // ✅ Fixed
+                        .requestMatchers("/ngos").permitAll()                 // ✅ Fixed
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
