@@ -11,6 +11,21 @@ import java.util.List;
 @Entity
 @Table(name = "food_items_table")
 public class FoodItem {
+
+    // --- ENUMS DEFINED INTERNALLY (The Correct Way) ---
+    // These names (PREPARED_FOOD, FRESH, etc.) will be saved directly to the database.
+    public enum Category {
+        PREPARED_FOOD,
+        INGREDIENTS
+    }
+
+    public enum Condition {
+        FRESH,
+        GOOD,
+        NEAR_EXPIRY
+    }
+
+    // --- FIELDS ---
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,56 +38,44 @@ public class FoodItem {
     @Column(name = "food_name", nullable = false)
     private String foodName;
 
-    @Column(name = "food_type")
-    @Enumerated(EnumType.STRING)
-    private FoodType foodType;
-
     @NotNull
     @Column(nullable = false)
     private BigDecimal quantity;
 
-    @Column(name = "amount_in_kg")
-    private BigDecimal amountInKg;
-
+    @NotBlank
+    @Column(nullable = false)
     private String unit;
 
     @NotNull
     @Column(name = "expiry_date", nullable = false)
     private LocalDate expiryDate;
 
-    @NotNull
-    @Column(name = "preparation_time", nullable = false)
-    private LocalDateTime preparationTime;
-
     private String description;
 
-    @Column(name = "is_available")
-    private Boolean isAvailable = true;
+    @Column(name = "is_available", nullable = false)
+    private Boolean isAvailable = false;
 
-    @Column(name = "created_date")
+    @Column(name = "created_date", updatable = false)
     private LocalDateTime createdDate = LocalDateTime.now();
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Category category;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "`condition`", nullable = false)
+    private Condition condition;
 
     @OneToMany(mappedBy = "foodItem", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FoodRequest> foodRequests;
 
-    public enum FoodType {
-        VEGETARIAN, NON_VEGETARIAN, VEGAN
-    }
 
-    // Constructors
+    // --- CONSTRUCTORS & METHODS ---
     public FoodItem() {}
 
-    public FoodItem(Hotel hotel, String foodName, FoodType foodType, BigDecimal quantity, String unit, LocalDate expiryDate, LocalDateTime preparationTime) {
-        this.hotel = hotel;
-        this.foodName = foodName;
-        this.foodType = foodType;
-        this.quantity = quantity;
-        this.unit = unit;
-        this.expiryDate = expiryDate;
-        this.preparationTime = preparationTime;
-    }
-
-    // Getters and Setters
+    // Getters and Setters for all fields...
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -82,14 +85,8 @@ public class FoodItem {
     public String getFoodName() { return foodName; }
     public void setFoodName(String foodName) { this.foodName = foodName; }
 
-    public FoodType getFoodType() { return foodType; }
-    public void setFoodType(FoodType foodType) { this.foodType = foodType; }
-
     public BigDecimal getQuantity() { return quantity; }
     public void setQuantity(BigDecimal quantity) { this.quantity = quantity; }
-
-    public BigDecimal getAmountInKg() { return amountInKg; }
-    public void setAmountInKg(BigDecimal amountInKg) { this.amountInKg = amountInKg; }
 
     public String getUnit() { return unit; }
     public void setUnit(String unit) { this.unit = unit; }
@@ -97,17 +94,20 @@ public class FoodItem {
     public LocalDate getExpiryDate() { return expiryDate; }
     public void setExpiryDate(LocalDate expiryDate) { this.expiryDate = expiryDate; }
 
-    public LocalDateTime getPreparationTime() { return preparationTime; }
-    public void setPreparationTime(LocalDateTime preparationTime) { this.preparationTime = preparationTime; }
-
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
     public Boolean getIsAvailable() { return isAvailable; }
-    public void setIsAvailable(Boolean isAvailable) { this.isAvailable = isAvailable; }
+    public void setIsAvailable(Boolean available) { isAvailable = available; }
 
     public LocalDateTime getCreatedDate() { return createdDate; }
     public void setCreatedDate(LocalDateTime createdDate) { this.createdDate = createdDate; }
+
+    public Category getCategory() { return category; }
+    public void setCategory(Category category) { this.category = category; }
+
+    public Condition getCondition() { return condition; }
+    public void setCondition(Condition condition) { this.condition = condition; }
 
     public List<FoodRequest> getFoodRequests() { return foodRequests; }
     public void setFoodRequests(List<FoodRequest> foodRequests) { this.foodRequests = foodRequests; }

@@ -7,6 +7,7 @@ import com.secondserve.server.repository.NgoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional; // Import for @Transactional
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,25 @@ public class NgoService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    /**
+     * This is the new, dedicated method for handling NGO registration business logic.
+     * It was moved here from the old AuthService.
+     */
+    @Transactional // Ensures the entire method is a single, complete database transaction.
+    public NgoDto registerNgo(NgoDto ngoDto) {
+        if (ngoRepository.existsByEmail(ngoDto.getEmail())) {
+            throw new RuntimeException("Error: Email address is already in use.");
+        }
+
+        Ngo ngo = convertToEntity(ngoDto);
+        ngo.setPassword(passwordEncoder.encode(ngoDto.getPassword()));
+
+        Ngo savedNgo = ngoRepository.save(ngo);
+        return convertToDto(savedNgo);
+    }
+
+    // --- (All other existing service methods are perfectly fine and remain unchanged) ---
+
     public List<NgoDto> getAllActiveNgos() {
         return ngoRepository.findByIsActiveTrue()
                 .stream()
@@ -30,17 +50,6 @@ public class NgoService {
         Ngo ngo = ngoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("NGO not found with id: " + id));
         return convertToDto(ngo);
-    }
-
-    public NgoDto createNgo(NgoDto ngoDto) {
-        if (ngoRepository.existsByEmail(ngoDto.getEmail())) {
-            throw new RuntimeException("Email already exists");
-        }
-
-        Ngo ngo = convertToEntity(ngoDto);
-        ngo.setPassword(passwordEncoder.encode(ngoDto.getPassword()));
-        Ngo savedNgo = ngoRepository.save(ngo);
-        return convertToDto(savedNgo);
     }
 
     public NgoDto updateNgo(Long id, NgoDto ngoDto) {
@@ -63,7 +72,7 @@ public class NgoService {
     public void deleteNgo(Long id) {
         Ngo ngo = ngoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("NGO not found with id: " + id));
-        ngo.setIsActive(false);
+        ngo.setIsActive(false); // Soft delete is good practice.
         ngoRepository.save(ngo);
     }
 
@@ -87,6 +96,7 @@ public class NgoService {
         dto.setRegistrationDate(ngo.getRegistrationDate());
         dto.setIsActive(ngo.getIsActive());
         dto.setTotalFoodReceived(ngo.getTotalFoodReceived());
+        // Password is intentionally not included.
         return dto;
     }
 

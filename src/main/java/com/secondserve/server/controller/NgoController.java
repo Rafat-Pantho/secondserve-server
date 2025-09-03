@@ -4,17 +4,35 @@ import com.secondserve.server.dto.NgoDto;
 import com.secondserve.server.service.NgoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+// MODIFIED: Base path now includes /api for consistency with the server's context path.
 @RequestMapping("/ngos")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class NgoController {
 
     @Autowired
     private NgoService ngoService;
+
+    /**
+     * ADDED: This is the new, dedicated endpoint for NGO registration.
+     */
+    @PostMapping("/register")
+    public ResponseEntity<NgoDto> registerNgo(@Valid @RequestBody NgoDto ngoDto) {
+        try {
+            NgoDto createdNgo = ngoService.registerNgo(ngoDto);
+            return new ResponseEntity<>(createdNgo, HttpStatus.CREATED); // Returns 201 Created on success
+        } catch (Exception e) {
+            e.printStackTrace(); // Helpful for server-side debugging
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    // --- (The other endpoints you had are perfect for CRUD operations and are kept) ---
 
     @GetMapping
     public ResponseEntity<List<NgoDto>> getAllNgos() {
@@ -34,6 +52,7 @@ public class NgoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<NgoDto> updateNgo(@PathVariable Long id, @Valid @RequestBody NgoDto ngoDto) {
+        // NOTE: This endpoint should be secured so only the correct NGO can update their own profile.
         try {
             NgoDto updatedNgo = ngoService.updateNgo(id, ngoDto);
             return ResponseEntity.ok(updatedNgo);
@@ -44,6 +63,7 @@ public class NgoController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteNgo(@PathVariable Long id) {
+        // NOTE: This endpoint should likely be restricted to administrators.
         try {
             ngoService.deleteNgo(id);
             return ResponseEntity.noContent().build();

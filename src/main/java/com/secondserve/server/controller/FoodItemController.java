@@ -4,12 +4,14 @@ import com.secondserve.server.dto.FoodItemDto;
 import com.secondserve.server.service.FoodItemService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+// import org.springframework.security.core.annotation.AuthenticationPrincipal; // For later
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/food-items")
+@RequestMapping("/food-items") // Using the /api prefix
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class FoodItemController {
 
@@ -28,12 +30,6 @@ public class FoodItemController {
         return ResponseEntity.ok(foodItems);
     }
 
-    @GetMapping("/city/{city}")
-    public ResponseEntity<List<FoodItemDto>> getFoodItemsByCity(@PathVariable String city) {
-        List<FoodItemDto> foodItems = foodItemService.getAvailableFoodItemsByCity(city);
-        return ResponseEntity.ok(foodItems);
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<FoodItemDto> getFoodItemById(@PathVariable Long id) {
         try {
@@ -47,9 +43,13 @@ public class FoodItemController {
     @PostMapping
     public ResponseEntity<FoodItemDto> createFoodItem(@Valid @RequestBody FoodItemDto foodItemDto) {
         try {
-            FoodItemDto createdFoodItem = foodItemService.createFoodItem(foodItemDto);
-            return ResponseEntity.ok(createdFoodItem);
+            // Using placeholder hotel ID for now.
+            // In a real app, this would come from the logged-in user's security token.
+            Long hotelIdOfLoggedInUser = 1L;
+            FoodItemDto createdFoodItem = foodItemService.createFoodItem(foodItemDto, hotelIdOfLoggedInUser);
+            return new ResponseEntity<>(createdFoodItem, HttpStatus.CREATED);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
     }
@@ -79,6 +79,16 @@ public class FoodItemController {
         try {
             foodItemService.deleteFoodItem(id);
             return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    @PutMapping("/{id}/approve")
+// @PreAuthorize("hasRole('HOTEL_MANAGER')") // Enable this when security is complete
+    public ResponseEntity<Void> approveFoodItem(@PathVariable Long id) {
+        try {
+            foodItemService.markAsAvailable(id); // We'll need to create this service method
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }

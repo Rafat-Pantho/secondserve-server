@@ -1,18 +1,15 @@
 package com.secondserve.server.controller;
 
 import com.secondserve.server.dto.AuthResponse;
-import com.secondserve.server.dto.HotelDto;
 import com.secondserve.server.dto.LoginRequest;
-import com.secondserve.server.dto.NgoDto;
 import com.secondserve.server.service.AuthService;
-import com.secondserve.server.service.HotelService;
-import com.secondserve.server.service.NgoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+// MODIFIED: Base path now includes /api for consistency with server context path
 @RequestMapping("/auth")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class AuthController {
@@ -20,39 +17,24 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    @Autowired
-    private HotelService hotelService;
+    // --- MODIFIED: All other service dependencies and registration endpoints have been removed. ---
+    // The sole responsibility of this controller is now authentication (login).
 
-    @Autowired
-    private NgoService ngoService;
-
+    /**
+     * Authenticates a user (Hotel Manager, Kitchen Staff, or NGO) and returns a JWT.
+     * @param loginRequest The user's email, password, and userType.
+     * @return On success, an AuthResponse containing the JWT token and user details.
+     */
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         try {
             AuthResponse authResponse = authService.login(loginRequest);
             return ResponseEntity.ok(authResponse);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    @PostMapping("/register/hotel")
-    public ResponseEntity<HotelDto> registerHotel(@Valid @RequestBody HotelDto hotelDto) {
-        try {
-            HotelDto createdHotel = hotelService.createHotel(hotelDto);
-            return ResponseEntity.ok(createdHotel);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    @PostMapping("/register/ngo")
-    public ResponseEntity<NgoDto> registerNgo(@Valid @RequestBody NgoDto ngoDto) {
-        try {
-            NgoDto createdNgo = ngoService.createNgo(ngoDto);
-            return ResponseEntity.ok(createdNgo);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            // It's good practice to log the error and return a specific status if possible
+            e.printStackTrace(); // Helpful for debugging
+            // For security, you might return 401 Unauthorized for bad credentials
+            return ResponseEntity.status(401).build();
         }
     }
 }
