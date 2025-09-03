@@ -5,30 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ba250f8e-e91e-4fa2-bbfa-c94671563887" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/controller/KitchenStaffController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/dto/KitchenStaffDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/entity/KitchenStaff.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/repository/KitchenStaffRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/service/KitchenStaffService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/controller/FoodItemController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/controller/FoodItemController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/controller/HotelController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/controller/HotelController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/controller/NgoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/controller/NgoController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/dto/FoodItemDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/dto/FoodItemDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/dto/AuthResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/dto/AuthResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/dto/HotelDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/dto/HotelDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/entity/FoodItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/entity/FoodItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/entity/Hotel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/entity/Hotel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/repository/FoodItemRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/repository/FoodItemRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/repository/HotelRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/repository/HotelRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/repository/NgoRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/repository/NgoRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/service/AuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/service/FoodItemService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/service/FoodItemService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/service/HotelService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/service/HotelService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/service/NgoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/service/NgoService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,19 +51,6 @@
     &quot;last_opened_file_path&quot;: &quot;E:/secondserve-server&quot;
   }
 }</component>
-  <component name="RunManager">
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="secondserve-server" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="secondserve-server" />
-      <option name="filePath" />
-      <method v="2" />
-    </configuration>
-  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">

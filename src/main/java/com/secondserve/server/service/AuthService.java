@@ -33,61 +33,75 @@ public class AuthService {
     @Autowired
     private JwtUtil jwtUtil;
 
+    // Inside your AuthService.java file
+
     public AuthResponse login(LoginRequest loginRequest) {
-        // --- MODIFIED: Standardized to avoid case sensitivity issues ---
+        if (loginRequest.getUserType() == null) {
+            throw new RuntimeException("User type must be provided.");
+        }
+
         String userType = loginRequest.getUserType().toUpperCase();
 
-        if ("HOTEL_MANAGER".equals(userType)) { // Changed to match the more descriptive role name
-            Hotel hotel = hotelRepository.findByEmail(loginRequest.getEmail())
-                    .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + loginRequest.getEmail()));
+        switch (userType) {
+            case "HOTEL_MANAGER":
+                Hotel hotel = hotelRepository.findByEmail(loginRequest.getEmail())
+                        .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + loginRequest.getEmail()));
 
-            if (!passwordEncoder.matches(loginRequest.getPassword(), hotel.getPassword())) {
-                throw new RuntimeException("Invalid credentials");
-            }
+                if (!passwordEncoder.matches(loginRequest.getPassword(), hotel.getPassword())) {
+                    throw new RuntimeException("Invalid credentials");
+                }
+                if (!hotel.getIsActive()) {
+                    throw new RuntimeException("Account is inactive");
+                }
 
-            if (!hotel.getIsActive()) {
-                throw new RuntimeException("Account is inactive");
-            }
+                String hotelToken = jwtUtil.generateToken(hotel.getEmail(), "HOTEL_MANAGER", hotel.getId());
 
-            String token = jwtUtil.generateToken(hotel.getEmail(), "HOTEL_MANAGER", hotel.getId());
-            return new AuthResponse(token, "HOTEL_MANAGER", hotel.getId(), hotel.getManagerName(), hotel.getEmail());
+                // --- MODIFIED PART ---
+                // Create the response object and then set the specific organization name.
+                AuthResponse hotelResponse = new AuthResponse(hotelToken, "HOTEL_MANAGER", hotel.getId(), hotel.getManagerName(), hotel.getEmail());
+                hotelResponse.setOrganizationName(hotel.getHotelName()); // Add the hotel name
+                return hotelResponse;
 
-        } else if ("NGO".equals(userType)) {
-            Ngo ngo = ngoRepository.findByEmail(loginRequest.getEmail())
-                    .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + loginRequest.getEmail()));
+            case "NGO":
+                Ngo ngo = ngoRepository.findByEmail(loginRequest.getEmail())
+                        .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + loginRequest.getEmail()));
 
-            if (!passwordEncoder.matches(loginRequest.getPassword(), ngo.getPassword())) {
-                throw new RuntimeException("Invalid credentials");
-            }
+                if (!passwordEncoder.matches(loginRequest.getPassword(), ngo.getPassword())) {
+                    throw new RuntimeException("Invalid credentials");
+                }
+                if (!ngo.getIsActive()) {
+                    throw new RuntimeException("Account is inactive");
+                }
 
-            if (!ngo.getIsActive()) {
-                throw new RuntimeException("Account is inactive");
-            }
+                String ngoToken = jwtUtil.generateToken(ngo.getEmail(), "NGO", ngo.getId());
 
-            String token = jwtUtil.generateToken(ngo.getEmail(), "NGO", ngo.getId());
-            return new AuthResponse(token, "NGO", ngo.getId(), ngo.getContactPerson(), ngo.getEmail());
+                // --- MODIFIED PART ---
+                AuthResponse ngoResponse = new AuthResponse(ngoToken, "NGO", ngo.getId(), ngo.getContactPerson(), ngo.getEmail());
+                ngoResponse.setOrganizationName(ngo.getNgoName()); // Add the NGO name
+                return ngoResponse;
 
-            // =======================================================
-            // ======== THIS IS THE NEW BLOCK YOU NEED TO ADD ========
-            // =======================================================
-        } else if ("KITCHEN_STAFF".equals(userType)) {
-            KitchenStaff staff = kitchenStaffRepository.findByEmail(loginRequest.getEmail())
-                    .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + loginRequest.getEmail()));
+            case "KITCHEN_STAFF":
+                KitchenStaff staff = kitchenStaffRepository.findByEmail(loginRequest.getEmail())
+                        .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + loginRequest.getEmail()));
 
-            if (!passwordEncoder.matches(loginRequest.getPassword(), staff.getPassword())) {
-                throw new RuntimeException("Invalid credentials");
-            }
+                if (!passwordEncoder.matches(loginRequest.getPassword(), staff.getPassword())) {
+                    throw new RuntimeException("Invalid credentials");
+                }
+                if (!staff.getIsActive()) {
+                    throw new RuntimeException("Account is inactive");
+                }
 
-            if (!staff.getIsActive()) {
-                throw new RuntimeException("Account is inactive");
-            }
+                String staffToken = jwtUtil.generateToken(staff.getEmail(), "KITCHEN_STAFF", staff.getId());
 
-            String token = jwtUtil.generateToken(staff.getEmail(), "KITCHEN_STAFF", staff.getId());
-            return new AuthResponse(token, "KITCHEN_STAFF", staff.getId(), staff.getStaffName(), staff.getEmail());
+                // --- MODIFIED PART ---
+                AuthResponse staffResponse = new AuthResponse(staffToken, "KITCHEN_STAFF", staff.getId(), staff.getStaffName(), staff.getEmail());
+                // For staff, the organization name is their hotel's name.
+                // This requires accessing the related Hotel entity.
+                staffResponse.setOrganizationName(staff.getHotel().getHotelName());
+                return staffResponse;
 
-        } else {
-            // This is the line that was being triggered. It now correctly handles unknown types.
-            throw new RuntimeException("Invalid user type");
+            default:
+                throw new RuntimeException("Invalid user type");
         }
     }
 }

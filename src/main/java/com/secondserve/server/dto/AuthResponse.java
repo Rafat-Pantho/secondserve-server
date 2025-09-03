@@ -6,7 +6,7 @@ public class AuthResponse {
     private Long userId;
     private String name;
     private String email;
-
+    private String organizationName;
     // Constructors
     public AuthResponse() {}
 
@@ -33,4 +33,11 @@ public class AuthResponse {
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+    public String getOrganizationName() {
+        return organizationName;
+    }
+
+    public void setOrganizationName(String organizationName) {
+        this.organizationName = organizationName;
+    }
 }

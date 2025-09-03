@@ -38,6 +38,8 @@ public class HotelService {
         DashboardStatsDto statsDto = new DashboardStatsDto();
         statsDto.setTotalDonatedThisWeek(BigDecimal.valueOf(donatedSum != null ? donatedSum : 0.0));
         statsDto.setTotalLoggedThisWeek(BigDecimal.valueOf(loggedSum != null ? loggedSum : 0.0));
+
+        // --- THIS IS THE CRITICAL LINE THAT MUST BE PRESENT ---
         statsDto.setHotelCode(hotel.getHotelCode());
 
         return statsDto;

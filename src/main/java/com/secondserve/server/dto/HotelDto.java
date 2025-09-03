@@ -13,13 +13,13 @@ public class HotelDto {
     private String hotelName;
     @NotBlank(message = "Manager name is required")
     private String managerName;
-    @Email @NotBlank(message = "Email is required")
+    
     private String email;
-    @NotBlank(message = "Password is required")
+    
     private String password;
-    @NotBlank(message = "Address is required")
+    
     private String address;
-    @NotBlank(message = "Hotel license is required")
+    
     private String hotelLicense;
 
     // --- ADDED: The field to hold the generated hotel code ---
