@@ -11,74 +11,65 @@ import com.secondserve.server.repository.FoodRequestRepository;
 import com.secondserve.server.repository.NgoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class FoodRequestService {
 
-    @Autowired
-    private FoodRequestRepository foodRequestRepository;
+    @Autowired private FoodRequestRepository foodRequestRepository;
+    @Autowired private NgoRepository ngoRepository;
+    @Autowired private FoodItemRepository foodItemRepository;
 
-    @Autowired
-    private NgoRepository ngoRepository;
-
-    @Autowired
-    private FoodItemRepository foodItemRepository;
-
-    public List<FoodRequestDto> getRequestsByNgo(Long ngoId) {
-        return foodRequestRepository.findByNgoIdOrderByRequestDateDesc(ngoId)
-                .stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-    }
-
-    public List<FoodRequestDto> getRequestsForHotel(Long hotelId) {
-        return foodRequestRepository.findByFoodItemHotelIdOrderByRequestDateDesc(hotelId)
-                .stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-    }
-
-    public List<FoodRequestDto> getPendingRequestsForHotel(Long hotelId) {
-        return foodRequestRepository.findPendingRequestsForHotel(hotelId)
-                .stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-    }
-
-    public FoodRequestDto getFoodRequestById(Long id) {
-        FoodRequest foodRequest = foodRequestRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Food request not found with id: " + id));
-        return convertToDto(foodRequest);
-    }
-
-    public FoodRequestDto createFoodRequest(FoodRequestDto foodRequestDto) {
-        Ngo ngo = ngoRepository.findById(foodRequestDto.getNgoId())
-                .orElseThrow(() -> new ResourceNotFoundException("NGO not found with id: " + foodRequestDto.getNgoId()));
+    /**
+     * Creates a new food request from an NGO for a specific food item.
+     * @param foodRequestDto DTO containing details like foodItemId and requestedQuantity.
+     * @param ngoId The ID of the authenticated NGO making the request (for security).
+     * @return A DTO of the newly created request, which will have a 'PENDING' status.
+     */
+    @Transactional
+    public FoodRequestDto createFoodRequest(FoodRequestDto foodRequestDto, Long ngoId) {
+        // Find the NGO using the secure ID from the authenticated user's token
+        Ngo ngo = ngoRepository.findById(ngoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Authenticated NGO not found with id: " + ngoId));
 
         FoodItem foodItem = foodItemRepository.findById(foodRequestDto.getFoodItemId())
                 .orElseThrow(() -> new ResourceNotFoundException("Food item not found with id: " + foodRequestDto.getFoodItemId()));
 
         if (!foodItem.getIsAvailable()) {
-            throw new RuntimeException("Food item is no longer available");
+            throw new IllegalStateException("This food item is no longer available for donation.");
         }
 
         FoodRequest foodRequest = convertToEntity(foodRequestDto);
         foodRequest.setNgo(ngo);
         foodRequest.setFoodItem(foodItem);
+        foodRequest.setRequestStatus(RequestStatus.PENDING); // Explicitly set the initial status
 
         FoodRequest savedRequest = foodRequestRepository.save(foodRequest);
         return convertToDto(savedRequest);
     }
 
+    /**
+     * Updates the status of a request (e.g., from PENDING to APPROVED or REJECTED).
+     * This action is typically performed by a Hotel Manager.
+     * @param id The ID of the food request to update.
+     * @param status The new status (APPROVED or REJECTED).
+     * @return A DTO of the updated food request.
+     */
+    @Transactional
     public FoodRequestDto updateRequestStatus(Long id, RequestStatus status) {
         FoodRequest foodRequest = foodRequestRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Food request not found with id: " + id));
 
+        // This is a crucial business rule: only pending requests can be approved or rejected.
+        if (foodRequest.getRequestStatus() != RequestStatus.PENDING) {
+            throw new IllegalStateException("This request has already been " + foodRequest.getRequestStatus().toString().toLowerCase());
+        }
+
         foodRequest.setRequestStatus(status);
 
-        // If approved, mark food item as unavailable
+        // Another key rule: if approved, the food item is now "off the market".
         if (status == RequestStatus.APPROVED) {
             FoodItem foodItem = foodRequest.getFoodItem();
             foodItem.setIsAvailable(false);
@@ -89,45 +80,56 @@ public class FoodRequestService {
         return convertToDto(updatedRequest);
     }
 
-    public FoodRequestDto updateFoodRequest(Long id, FoodRequestDto foodRequestDto) {
-        FoodRequest foodRequest = foodRequestRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Food request not found with id: " + id));
-
-        foodRequest.setRequestedQuantity(foodRequestDto.getRequestedQuantity());
-        foodRequest.setPickupDate(foodRequestDto.getPickupDate());
-        foodRequest.setNotes(foodRequestDto.getNotes());
-
-        FoodRequest updatedRequest = foodRequestRepository.save(foodRequest);
-        return convertToDto(updatedRequest);
+    /**
+     * Retrieves the full request history for a specific NGO.
+     * This is used to power the NGO's "My Requests" page.
+     */
+    public List<FoodRequestDto> getRequestsByNgo(Long ngoId) {
+        return foodRequestRepository.findByNgoIdOrderByRequestDateDesc(ngoId)
+                .stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
-    public void deleteFoodRequest(Long id) {
-        FoodRequest foodRequest = foodRequestRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Food request not found with id: " + id));
-        foodRequestRepository.delete(foodRequest);
+    /**
+     * Retrieves the full request history for a specific hotel.
+     * This can be used to show a hotel manager all past and present requests.
+     */
+    public List<FoodRequestDto> getRequestsForHotel(Long hotelId) {
+        return foodRequestRepository.findByFoodItemHotelIdOrderByRequestDateDesc(hotelId)
+                .stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
-    private FoodRequestDto convertToDto(FoodRequest foodRequest) {
+    // You could also add other necessary methods here, such as:
+    // public FoodRequestDto getFoodRequestById(Long id) { ... }
+    // public void deleteFoodRequest(Long id) { ... }
+
+    // --- Helper Methods for Data Conversion ---
+
+    private FoodRequestDto convertToDto(FoodRequest request) {
         FoodRequestDto dto = new FoodRequestDto();
-        dto.setId(foodRequest.getId());
-        dto.setNgoId(foodRequest.getNgo().getId());
-        dto.setNgoName(foodRequest.getNgo().getNgoName());
-        dto.setFoodItemId(foodRequest.getFoodItem().getId());
-        dto.setFoodItemName(foodRequest.getFoodItem().getFoodName());
-        dto.setHotelName(foodRequest.getFoodItem().getHotel().getHotelName());
-        dto.setRequestedQuantity(foodRequest.getRequestedQuantity());
-        dto.setRequestStatus(foodRequest.getRequestStatus());
-        dto.setRequestDate(foodRequest.getRequestDate());
-        dto.setPickupDate(foodRequest.getPickupDate());
-        dto.setNotes(foodRequest.getNotes());
+        dto.setId(request.getId());
+        dto.setNgoId(request.getNgo().getId());
+        dto.setNgoName(request.getNgo().getNgoName());
+        dto.setFoodItemId(request.getFoodItem().getId());
+        dto.setFoodItemName(request.getFoodItem().getFoodName());
+        dto.setHotelName(request.getFoodItem().getHotel().getHotelName()); // Includes Hotel Name for convenience
+        dto.setRequestedQuantity(request.getRequestedQuantity());
+
+        dto.setRequestStatus(request.getRequestStatus());
+        dto.setRequestDate(request.getRequestDate());
+        dto.setNotes(request.getNotes());
         return dto;
     }
 
     private FoodRequest convertToEntity(FoodRequestDto dto) {
-        FoodRequest foodRequest = new FoodRequest();
-        foodRequest.setRequestedQuantity(dto.getRequestedQuantity());
-        foodRequest.setPickupDate(dto.getPickupDate());
-        foodRequest.setNotes(dto.getNotes());
-        return foodRequest;
+        FoodRequest request = new FoodRequest();
+        // NOTE: We only map fields that the client is allowed to provide.
+        // ngoId and foodItemId are looked up separately for security.
+        request.setRequestedQuantity(dto.getRequestedQuantity());
+        request.setNotes(dto.getNotes());
+        return request;
     }
 }

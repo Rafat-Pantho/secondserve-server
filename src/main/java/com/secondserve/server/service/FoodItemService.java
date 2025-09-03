@@ -17,7 +17,6 @@ public class FoodItemService {
 
     @Autowired
     private FoodItemRepository foodItemRepository;
-
     @Autowired
     private HotelRepository hotelRepository;
 
@@ -35,12 +34,8 @@ public class FoodItemService {
                 .collect(Collectors.toList());
     }
 
-    public List<FoodItemDto> getAvailableFoodItemsByCity(String city) {
-        return foodItemRepository.findAvailableByCity(city, LocalDate.now())
-                .stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-    }
+    // --- REMOVED: This method caused a compilation error because we deleted the underlying repository query. ---
+    // public List<FoodItemDto> getAvailableFoodItemsByCity(String city) { ... }
 
     public FoodItemDto getFoodItemById(Long id) {
         FoodItem foodItem = foodItemRepository.findById(id)
@@ -48,39 +43,40 @@ public class FoodItemService {
         return convertToDto(foodItem);
     }
 
-    public FoodItemDto createFoodItem(FoodItemDto foodItemDto) {
-        Hotel hotel = hotelRepository.findById(foodItemDto.getHotelId())
-                .orElseThrow(() -> new ResourceNotFoundException("Hotel not found with id: " + foodItemDto.getHotelId()));
+    // --- MODIFIED: Method signature changed to be more secure and logical ---
+    public FoodItemDto createFoodItem(FoodItemDto foodItemDto, Long hotelIdOfLoggedInStaff) {
+        Hotel hotel = hotelRepository.findById(hotelIdOfLoggedInStaff)
+                .orElseThrow(() -> new ResourceNotFoundException("Hotel for user not found with id: " + hotelIdOfLoggedInStaff));
 
         FoodItem foodItem = convertToEntity(foodItemDto);
         foodItem.setHotel(hotel);
+        foodItem.setIsAvailable(false); // New items require manager approval
+
         FoodItem savedFoodItem = foodItemRepository.save(foodItem);
         return convertToDto(savedFoodItem);
     }
 
+    // --- MODIFIED: This method now uses the new fields ---
     public FoodItemDto updateFoodItem(Long id, FoodItemDto foodItemDto) {
         FoodItem foodItem = foodItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Food item not found with id: " + id));
 
+        // Update with the new, correct fields
         foodItem.setFoodName(foodItemDto.getFoodName());
-        foodItem.setFoodType(foodItemDto.getFoodType());
         foodItem.setQuantity(foodItemDto.getQuantity());
-        foodItem.setAmountInKg(foodItemDto.getAmountInKg());
         foodItem.setUnit(foodItemDto.getUnit());
         foodItem.setExpiryDate(foodItemDto.getExpiryDate());
-        foodItem.setPreparationTime(foodItemDto.getPreparationTime());
         foodItem.setDescription(foodItemDto.getDescription());
-        foodItem.setIsAvailable(foodItemDto.getIsAvailable());
+        foodItem.setCategory(foodItemDto.getCategory());
+        foodItem.setCondition(foodItemDto.getCondition());
+
+        // This would likely be handled by a manager, but is included for completeness
+        if(foodItemDto.getIsAvailable() != null) {
+            foodItem.setIsAvailable(foodItemDto.getIsAvailable());
+        }
 
         FoodItem updatedFoodItem = foodItemRepository.save(foodItem);
         return convertToDto(updatedFoodItem);
-    }
-
-    public void deleteFoodItem(Long id) {
-        FoodItem foodItem = foodItemRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Food item not found with id: " + id));
-        foodItem.setIsAvailable(false);
-        foodItemRepository.save(foodItem);
     }
 
     public void markAsUnavailable(Long id) {
@@ -90,34 +86,49 @@ public class FoodItemService {
         foodItemRepository.save(foodItem);
     }
 
+    public void deleteFoodItem(Long id) {
+        if (!foodItemRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Food item not found with id: " + id);
+        }
+        foodItemRepository.deleteById(id);
+    }
+
+    // --- MODIFIED: This helper now uses the new fields ---
     private FoodItemDto convertToDto(FoodItem foodItem) {
         FoodItemDto dto = new FoodItemDto();
         dto.setId(foodItem.getId());
         dto.setHotelId(foodItem.getHotel().getId());
         dto.setHotelName(foodItem.getHotel().getHotelName());
         dto.setFoodName(foodItem.getFoodName());
-        dto.setFoodType(foodItem.getFoodType());
         dto.setQuantity(foodItem.getQuantity());
-        dto.setAmountInKg(foodItem.getAmountInKg());
         dto.setUnit(foodItem.getUnit());
         dto.setExpiryDate(foodItem.getExpiryDate());
-        dto.setPreparationTime(foodItem.getPreparationTime());
         dto.setDescription(foodItem.getDescription());
+        dto.setCategory(foodItem.getCategory());
+        dto.setCondition(foodItem.getCondition());
         dto.setIsAvailable(foodItem.getIsAvailable());
         dto.setCreatedDate(foodItem.getCreatedDate());
         return dto;
     }
+    public void markAsAvailable(Long id) {
+        FoodItem foodItem = foodItemRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Food item not found with id: " + id));
 
+        // Here we would add security to check if the manager owns this item.
+
+        foodItem.setIsAvailable(true); // Set the flag to true
+        foodItemRepository.save(foodItem);
+    }
+    // --- MODIFIED: This helper now uses the new fields ---
     private FoodItem convertToEntity(FoodItemDto dto) {
         FoodItem foodItem = new FoodItem();
         foodItem.setFoodName(dto.getFoodName());
-        foodItem.setFoodType(dto.getFoodType());
         foodItem.setQuantity(dto.getQuantity());
-        foodItem.setAmountInKg(dto.getAmountInKg());
         foodItem.setUnit(dto.getUnit());
         foodItem.setExpiryDate(dto.getExpiryDate());
-        foodItem.setPreparationTime(dto.getPreparationTime());
         foodItem.setDescription(dto.getDescription());
+        foodItem.setCategory(dto.getCategory());
+        foodItem.setCondition(dto.getCondition());
         return foodItem;
     }
 }
