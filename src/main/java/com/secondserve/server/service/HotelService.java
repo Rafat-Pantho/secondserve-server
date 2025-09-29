@@ -57,8 +57,11 @@ public class HotelService {
         return convertToDto(savedHotel);
     }
 
-    public List<HotelDto> getAllActiveHotels() {
-        return hotelRepository.findByIsActiveTrue().stream().map(this::convertToDto).collect(Collectors.toList());
+    public List<HotelDto> getAllActiveHotelsWithDonations() {
+        return hotelRepository.findActiveHotelsWithAvailableFood()
+                .stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
     public HotelDto getHotelById(Long id) {

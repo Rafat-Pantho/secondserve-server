@@ -6,9 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="ba250f8e-e91e-4fa2-bbfa-c94671563887" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/controller/FoodItemController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/controller/FoodItemController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/repository/FoodItemRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/repository/FoodItemRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/service/FoodItemService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/service/FoodItemService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/controller/HotelController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/controller/HotelController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/repository/HotelRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/repository/HotelRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/service/HotelService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/service/HotelService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

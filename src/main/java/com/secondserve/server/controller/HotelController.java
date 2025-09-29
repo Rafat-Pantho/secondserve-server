@@ -55,7 +55,7 @@ public class HotelController {
 
     @GetMapping
     public ResponseEntity<List<HotelDto>> getAllHotels() {
-        List<HotelDto> hotels = hotelService.getAllActiveHotels();
+        List<HotelDto> hotels = hotelService.getAllActiveHotelsWithDonations();
         return ResponseEntity.ok(hotels);
     }
 
