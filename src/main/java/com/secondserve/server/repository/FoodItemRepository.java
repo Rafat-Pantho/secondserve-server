@@ -25,4 +25,10 @@ public interface FoodItemRepository extends JpaRepository<FoodItem, Long> {
     @Query("SELECT COALESCE(SUM(fi.quantity), 0.0) FROM FoodItem fi WHERE fi.hotel.id = :hotelId AND fi.createdDate >= :startDate")
     Double sumQuantityByHotelAndDateRange(@Param("hotelId") Long hotelId, @Param("startDate") LocalDateTime startDate);
 
+    @Query("SELECT f FROM FoodItem f WHERE f.hotel.id = :hotelId AND f.createdDate >= :startOfDay AND f.createdDate < :endOfDay ORDER BY f.createdDate DESC")
+    List<FoodItem> findByHotelIdAndCreatedDateToday(
+            @Param("hotelId") Long hotelId,
+            @Param("startOfDay") LocalDateTime startOfDay,
+            @Param("endOfDay") LocalDateTime endOfDay
+    );
 }

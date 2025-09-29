@@ -98,4 +98,11 @@ public class FoodItemController {
         List<FoodItemDto> foodItems = foodItemService.getPendingFoodItemsByHotel(hotelId);
         return ResponseEntity.ok(foodItems);
     }
+    // Add this endpoint to FoodItemController class:
+
+    @GetMapping("/hotel/{hotelId}/today")
+    public ResponseEntity<List<FoodItemDto>> getTodaysFoodItemsByHotel(@PathVariable Long hotelId) {
+        List<FoodItemDto> foodItems = foodItemService.getTodaysFoodItemsByHotel(hotelId);
+        return ResponseEntity.ok(foodItems);
+    }
 }

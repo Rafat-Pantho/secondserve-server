@@ -1,5 +1,6 @@
 package com.secondserve.server.service;
 
+import java.time.LocalDateTime;
 import com.secondserve.server.dto.FoodItemDto;
 import com.secondserve.server.entity.FoodItem;
 import com.secondserve.server.entity.Hotel;
@@ -140,6 +141,17 @@ public class FoodItemService {
     
     public List<FoodItemDto> getPendingFoodItemsByHotel(Long hotelId) {
         return foodItemRepository.findByHotelIdAndIsAvailableFalse(hotelId)
+                .stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+    // Add this method to FoodItemService class:
+
+    public List<FoodItemDto> getTodaysFoodItemsByHotel(Long hotelId) {
+        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+        LocalDateTime endOfDay = startOfDay.plusDays(1);
+
+        return foodItemRepository.findByHotelIdAndCreatedDateToday(hotelId, startOfDay, endOfDay)
                 .stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
