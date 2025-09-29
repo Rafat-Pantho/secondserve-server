@@ -93,4 +93,9 @@ public class FoodItemController {
             return ResponseEntity.notFound().build();
         }
     }
+    @GetMapping("/hotel/{hotelId}/pending")
+    public ResponseEntity<List<FoodItemDto>> getPendingFoodItemsByHotel(@PathVariable Long hotelId) {
+        List<FoodItemDto> foodItems = foodItemService.getPendingFoodItemsByHotel(hotelId);
+        return ResponseEntity.ok(foodItems);
+    }
 }

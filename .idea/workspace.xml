@@ -6,10 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="ba250f8e-e91e-4fa2-bbfa-c94671563887" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/dto/AuthResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/dto/AuthResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/dto/HotelDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/dto/HotelDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/service/AuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/service/HotelService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/service/HotelService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/controller/FoodItemController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/controller/FoodItemController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/repository/FoodItemRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/repository/FoodItemRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/service/FoodItemService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/service/FoodItemService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,7 +47,7 @@
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/secondserve-server&quot;
+    &quot;last_opened_file_path&quot;: &quot;E:/SecondServe&quot;
   }
 }</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />

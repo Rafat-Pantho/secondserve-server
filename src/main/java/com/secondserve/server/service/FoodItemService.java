@@ -131,4 +131,17 @@ public class FoodItemService {
         foodItem.setCondition(dto.getCondition());
         return foodItem;
     }
+    public List<FoodItemDto> getFoodItemsByHotelPending(Long hotelId) {
+        return foodItemRepository.findByHotelIdAndIsAvailableFalse(hotelId)
+                .stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+    
+    public List<FoodItemDto> getPendingFoodItemsByHotel(Long hotelId) {
+        return foodItemRepository.findByHotelIdAndIsAvailableFalse(hotelId)
+                .stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
 }

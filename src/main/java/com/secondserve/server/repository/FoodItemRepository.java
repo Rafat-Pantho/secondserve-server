@@ -18,10 +18,11 @@ public interface FoodItemRepository extends JpaRepository<FoodItem, Long> {
     List<FoodItem> findByHotelAndIsAvailableTrue(Hotel hotel);
     List<FoodItem> findByHotelIdAndIsAvailableTrue(Long hotelId);
     List<FoodItem> findByHotelAndIsAvailableFalseOrderByCreatedDateDesc(Hotel hotel);
-
+    List<FoodItem> findByHotelIdAndIsAvailableFalse(Long hotelId);
     @Query("SELECT f FROM FoodItem f WHERE f.isAvailable = true AND f.expiryDate > :currentDate ORDER BY f.expiryDate ASC")
     List<FoodItem> findAvailableAndNotExpired(@Param("currentDate") LocalDate currentDate);
 
     @Query("SELECT COALESCE(SUM(fi.quantity), 0.0) FROM FoodItem fi WHERE fi.hotel.id = :hotelId AND fi.createdDate >= :startDate")
     Double sumQuantityByHotelAndDateRange(@Param("hotelId") Long hotelId, @Param("startDate") LocalDateTime startDate);
+
 }
