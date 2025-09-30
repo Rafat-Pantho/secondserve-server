@@ -22,7 +22,10 @@ public class FoodRequestDto {
     private LocalDateTime requestDate;
     private LocalDateTime pickupDate;
     private String notes;
+    private String unit;
 
+    public String getUnit() { return unit; }
+    public void setUnit(String unit) { this.unit = unit; }
     // Constructors
     public FoodRequestDto() {}
 

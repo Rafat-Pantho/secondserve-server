@@ -18,13 +18,10 @@ public class FoodRequestController {
     @Autowired
     private FoodRequestService foodRequestService;
 
-    // --- Endpoint for an NGO to CREATE a new request ---
     @PostMapping
     public ResponseEntity<FoodRequestDto> createFoodRequest(@Valid @RequestBody FoodRequestDto foodRequestDto) {
         try {
-            // FOR DEVELOPMENT: Placeholder for the logged-in NGO's ID
-            Long loggedInNgoId = 1L; // In production, get this from the security token
-
+            Long loggedInNgoId = 1L;
             FoodRequestDto createdRequest = foodRequestService.createFoodRequest(foodRequestDto, loggedInNgoId);
             return new ResponseEntity<>(createdRequest, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -33,10 +30,8 @@ public class FoodRequestController {
         }
     }
 
-    // --- Endpoints for a Hotel Manager to UPDATE a request's status ---
     @PutMapping("/{id}/approve")
     public ResponseEntity<FoodRequestDto> approveRequest(@PathVariable Long id) {
-        // Add security here to verify the user is a manager of the hotel that owns this request
         try {
             FoodRequestDto updatedRequest = foodRequestService.updateRequestStatus(id, RequestStatus.APPROVED);
             return ResponseEntity.ok(updatedRequest);
@@ -47,7 +42,6 @@ public class FoodRequestController {
 
     @PutMapping("/{id}/reject")
     public ResponseEntity<FoodRequestDto> rejectRequest(@PathVariable Long id) {
-        // Add security check here as well
         try {
             FoodRequestDto updatedRequest = foodRequestService.updateRequestStatus(id, RequestStatus.REJECTED);
             return ResponseEntity.ok(updatedRequest);
@@ -56,16 +50,40 @@ public class FoodRequestController {
         }
     }
 
-    // --- Endpoints for fetching request lists ---
+
+
     @GetMapping("/hotel/{hotelId}")
-    public ResponseEntity<List<FoodRequestDto>> getRequestsForHotel(@PathVariable Long hotelId) {
-        List<FoodRequestDto> requests = foodRequestService.getRequestsForHotel(hotelId);
-        return ResponseEntity.ok(requests);
+    public ResponseEntity<?> getRequestsForHotel(
+            @PathVariable Long hotelId,
+            @RequestParam(name = "status", required = false) String statusStr) {
+
+        if (statusStr != null && !statusStr.isBlank()) {
+            try {
+                // This manually converts the string to an enum, making it case-insensitive and safe
+                RequestStatus status = RequestStatus.valueOf(statusStr.toUpperCase());
+                List<FoodRequestDto> requests = foodRequestService.getRequestsByHotelAndStatus(hotelId, status);
+                return ResponseEntity.ok(requests);
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.badRequest().body("Invalid status value: " + statusStr);
+            }
+        } else {
+            // If no status is provided, get all requests
+            List<FoodRequestDto> requests = foodRequestService.getRequestsForHotel(hotelId);
+            return ResponseEntity.ok(requests);
+        }
     }
 
     @GetMapping("/ngo/{ngoId}")
-    public ResponseEntity<List<FoodRequestDto>> getRequestsByNgo(@PathVariable Long hotelId) {
-        List<FoodRequestDto> requests = foodRequestService.getRequestsByNgo(hotelId);
-        return ResponseEntity.ok(requests);
+    public ResponseEntity<List<FoodRequestDto>> getRequestsByNgo(@PathVariable Long ngoId) {
+        System.out.println("=== Getting requests for NGO: " + ngoId + " ==="); // Debug
+        try {
+            List<FoodRequestDto> requests = foodRequestService.getRequestsByNgo(ngoId);
+            System.out.println("Found " + requests.size() + " requests"); // Debug
+            return ResponseEntity.ok(requests);
+        } catch (Exception e) {
+            e.printStackTrace(); // This will show the full stack trace
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
+
 }

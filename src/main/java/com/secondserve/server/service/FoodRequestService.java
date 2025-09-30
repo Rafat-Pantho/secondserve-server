@@ -115,9 +115,9 @@ public class FoodRequestService {
         dto.setNgoName(request.getNgo().getNgoName());
         dto.setFoodItemId(request.getFoodItem().getId());
         dto.setFoodItemName(request.getFoodItem().getFoodName());
-        dto.setHotelName(request.getFoodItem().getHotel().getHotelName()); // Includes Hotel Name for convenience
+        dto.setHotelName(request.getFoodItem().getHotel().getHotelName());
         dto.setRequestedQuantity(request.getRequestedQuantity());
-
+        dto.setUnit(request.getFoodItem().getUnit()); // ADD THIS LINE
         dto.setRequestStatus(request.getRequestStatus());
         dto.setRequestDate(request.getRequestDate());
         dto.setNotes(request.getNotes());
@@ -131,5 +131,15 @@ public class FoodRequestService {
         request.setRequestedQuantity(dto.getRequestedQuantity());
         request.setNotes(dto.getNotes());
         return request;
+    }
+    public List<FoodRequestDto> getRequestsByHotelAndStatus(Long hotelId, RequestStatus status) {
+        // Convert the enum to a string for the native query
+        String statusString = status.name(); // This will be "PENDING"
+
+        // Call the new repository method that ends with "Native"
+        return foodRequestRepository.findRequestsByHotelAndStatusNative(hotelId, statusString)
+                .stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 }
