@@ -20,7 +20,7 @@ public class FoodItemDto {
     private String hotelName;
     private Boolean isAvailable;
     private LocalDateTime createdDate;
-
+    private String currentUserRequestStatus;
     // --- These fields PERFECTLY MATCH the data sent FROM the Kitchen Staff's FXML ---
     @NotBlank(message = "Food name is required")
     private String foodName;
@@ -94,4 +94,12 @@ public class FoodItemDto {
 
     public FoodItem.Condition getCondition() { return condition; }
     public void setCondition(FoodItem.Condition condition) { this.condition = condition; }
+
+    public String getCurrentUserRequestStatus() {
+        return currentUserRequestStatus;
+    }
+
+    public void setCurrentUserRequestStatus(String currentUserRequestStatus) {
+        this.currentUserRequestStatus = currentUserRequestStatus;
+    }
 }

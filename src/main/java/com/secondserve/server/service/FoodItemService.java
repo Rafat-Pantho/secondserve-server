@@ -3,14 +3,17 @@ package com.secondserve.server.service;
 import java.time.LocalDateTime;
 import com.secondserve.server.dto.FoodItemDto;
 import com.secondserve.server.entity.FoodItem;
+import com.secondserve.server.entity.FoodRequest;
 import com.secondserve.server.entity.Hotel;
 import com.secondserve.server.exception.ResourceNotFoundException;
 import com.secondserve.server.repository.FoodItemRepository;
+import com.secondserve.server.repository.FoodRequestRepository;
 import com.secondserve.server.repository.HotelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,7 +23,8 @@ public class FoodItemService {
     private FoodItemRepository foodItemRepository;
     @Autowired
     private HotelRepository hotelRepository;
-
+    @Autowired
+    private FoodRequestRepository foodRequestRepository;
     public List<FoodItemDto> getAllAvailableFoodItems() {
         return foodItemRepository.findAvailableAndNotExpired(LocalDate.now())
                 .stream()
@@ -28,11 +32,27 @@ public class FoodItemService {
                 .collect(Collectors.toList());
     }
 
-    public List<FoodItemDto> getFoodItemsByHotel(Long hotelId) {
-        return foodItemRepository.findByHotelIdAndIsAvailableTrue(hotelId)
-                .stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+    public List<FoodItemDto> getFoodItemsByHotel(Long hotelId,Long ngoId) {
+        List<FoodItem> foodItems = foodItemRepository.findByHotelIdAndIsAvailableTrue(hotelId);
+        return foodItems.stream().map(foodItem -> {
+            // A. Start by converting the basic entity to DTO using your existing helper
+            FoodItemDto dto = convertToDto(foodItem);
+
+            // B. Check for an existing request from this NGO for this item
+            Optional<FoodRequest> existingRequest = foodRequestRepository
+                    .findTopByFoodItemIdAndNgoIdOrderByRequestDateDesc(foodItem.getId(), ngoId);
+
+            // C. If a request exists, set its status on the DTO
+            if (existingRequest.isPresent()) {
+                String status = existingRequest.get().getRequestStatus().name();
+                // We only care about statuses that mean the request is "active"
+                if ("PENDING".equals(status) || "APPROVED".equals(status)) {
+                    dto.setCurrentUserRequestStatus(status);
+                }
+            }
+            return dto;
+
+        }).collect(Collectors.toList());
     }
 
     // --- REMOVED: This method caused a compilation error because we deleted the underlying repository query. ---

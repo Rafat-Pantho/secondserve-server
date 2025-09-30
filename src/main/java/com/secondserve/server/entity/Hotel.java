@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList; // --- ADDED ---
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "hotel_manager_table")
@@ -87,10 +88,7 @@ public class Hotel {
     }
 
 
-    // --- Getters and Setters ---
-    // (Existing getters and setters are unchanged)
 
-    // --- ADDED: Getters and Setters for the new fields ---
 
     public String getHotelLicense() {
         return hotelLicense;
@@ -117,7 +115,12 @@ public class Hotel {
     }
 
     // --- (The rest of your existing getters and setters are below) ---
-
+    public void addToTotalDonated(BigDecimal amount) {
+        if (this.totalFoodDonated == null) {
+            this.totalFoodDonated = BigDecimal.ZERO;
+        }
+        this.totalFoodDonated = this.totalFoodDonated.add(amount);
+    }
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getHotelName() { return hotelName; }

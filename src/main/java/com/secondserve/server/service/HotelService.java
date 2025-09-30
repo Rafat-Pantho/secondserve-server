@@ -30,16 +30,22 @@ public class HotelService {
         Hotel hotel = hotelRepository.findById(hotelId)
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel not found with id: " + hotelId));
 
-        LocalDateTime startOfWeek = LocalDateTime.now().with(DayOfWeek.MONDAY).toLocalDate().atStartOfDay();
+        // --- SIMPLIFIED LOGIC FOR DASHBOARD ---
 
-        Double donatedSum = foodRequestRepository.sumDonatedQuantityByHotelAndDateRange(hotelId, startOfWeek);
+        // Calculate 'logged' food as before
+        LocalDateTime startOfWeek = LocalDateTime.now().with(DayOfWeek.MONDAY).toLocalDate().atStartOfDay();
         Double loggedSum = foodItemRepository.sumQuantityByHotelAndDateRange(hotelId, startOfWeek);
 
         DashboardStatsDto statsDto = new DashboardStatsDto();
-        statsDto.setTotalDonatedThisWeek(BigDecimal.valueOf(donatedSum != null ? donatedSum : 0.0));
+
+        // **MODIFIED:** Get the 'donated' total directly from the hotel's stored field.
+        // This is now the single source of truth for all completed donations.
+        statsDto.setTotalDonatedThisWeek(hotel.getTotalFoodDonated());
+
+        // 'Logged this week' remains the same
         statsDto.setTotalLoggedThisWeek(BigDecimal.valueOf(loggedSum != null ? loggedSum : 0.0));
 
-        // --- THIS IS THE CRITICAL LINE THAT MUST BE PRESENT ---
+        // Hotel code is correct
         statsDto.setHotelCode(hotel.getHotelCode());
 
         return statsDto;

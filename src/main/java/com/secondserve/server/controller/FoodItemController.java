@@ -6,8 +6,14 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-// import org.springframework.security.core.annotation.AuthenticationPrincipal; // For later
+// import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
+import com.secondserve.server.repository.NgoRepository;
+import com.secondserve.server.repository.HotelRepository;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 import java.util.List;
 
 @RestController
@@ -17,7 +23,10 @@ public class FoodItemController {
 
     @Autowired
     private FoodItemService foodItemService;
-
+    @Autowired
+    private NgoRepository ngoRepository;
+    @Autowired
+    private HotelRepository hotelRepository;
     @GetMapping("/available")
     public ResponseEntity<List<FoodItemDto>> getAvailableFoodItems() {
         List<FoodItemDto> foodItems = foodItemService.getAllAvailableFoodItems();
@@ -25,11 +34,29 @@ public class FoodItemController {
     }
 
     @GetMapping("/hotel/{hotelId}")
-    public ResponseEntity<List<FoodItemDto>> getFoodItemsByHotel(@PathVariable Long hotelId) {
-        List<FoodItemDto> foodItems = foodItemService.getFoodItemsByHotel(hotelId);
+    public ResponseEntity<List<FoodItemDto>> getFoodItemsByHotel(@PathVariable Long hotelId, Authentication authentication) {
+
+        // 1. Get the email of the logged-in user from the Authentication object.
+        String email = authentication.getName();
+
+        // 2. Look up the user's ID.
+        // First, try to find them in the Ngo repository.
+        // If they aren't there, try the Hotel repository.
+        // If they aren't in either, something is wrong, so we throw an error.
+        Long userId = ngoRepository.findByEmail(email)
+                .map(ngo -> ngo.getId()) // If found as NGO, get their ID
+                .orElseGet(() -> hotelRepository.findByEmail(email)
+                        .map(hotel -> hotel.getId()) // If found as Hotel, get their ID
+                        .orElseThrow(() -> new UsernameNotFoundException("Authenticated user not found in database: " + email))
+                );
+
+
+        // 3. Call the updated service method, passing BOTH the hotelId and the found userId.
+        List<FoodItemDto> foodItems = foodItemService.getFoodItemsByHotel(hotelId, userId);
+
+        // 4. Return the "smarter" list to the frontend.
         return ResponseEntity.ok(foodItems);
     }
-
     @GetMapping("/{id}")
     public ResponseEntity<FoodItemDto> getFoodItemById(@PathVariable Long id) {
         try {

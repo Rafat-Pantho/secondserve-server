@@ -2,7 +2,7 @@ package com.secondserve.server.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod; // --- ADDED: This import is required ---
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -25,24 +25,24 @@ public class SecurityConfig {
         return new JwtAuthenticationFilter();
     }
 
-    
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .cors(cors -> {})
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
-                        // --- MODIFIED: Rules no longer need the /api prefix ---
-
-                        // Allow login and all registration endpoints
+                        // ... (other permitAll rules are fine)
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/hotels/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/staff/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/ngos/register").permitAll()
-
-                        // Allow anyone to GET public information
                         .requestMatchers(HttpMethod.GET, "/food-items/available").permitAll()
                         .requestMatchers(HttpMethod.GET, "/hotels/**").permitAll()
+
+
+                        .requestMatchers("/food-requests/**").permitAll()
+
 
                         // ALL other requests MUST be authenticated
                         .anyRequest().authenticated()

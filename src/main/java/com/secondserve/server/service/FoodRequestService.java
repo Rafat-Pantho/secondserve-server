@@ -4,10 +4,12 @@ import com.secondserve.server.dto.FoodRequestDto;
 import com.secondserve.server.entity.FoodItem;
 import com.secondserve.server.entity.FoodRequest;
 import com.secondserve.server.entity.FoodRequest.RequestStatus;
+import com.secondserve.server.entity.Hotel;
 import com.secondserve.server.entity.Ngo;
 import com.secondserve.server.exception.ResourceNotFoundException;
 import com.secondserve.server.repository.FoodItemRepository;
 import com.secondserve.server.repository.FoodRequestRepository;
+import com.secondserve.server.repository.HotelRepository;
 import com.secondserve.server.repository.NgoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,7 @@ public class FoodRequestService {
     @Autowired private FoodRequestRepository foodRequestRepository;
     @Autowired private NgoRepository ngoRepository;
     @Autowired private FoodItemRepository foodItemRepository;
-
+    @Autowired private HotelRepository hotelRepository;
     /**
      * Creates a new food request from an NGO for a specific food item.
      * @param foodRequestDto DTO containing details like foodItemId and requestedQuantity.
@@ -141,5 +143,34 @@ public class FoodRequestService {
                 .stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
+    }
+
+
+    @Transactional
+    public void completeFoodRequest(Long requestId) {
+        // Step 1: Find the request
+        FoodRequest foodRequest = foodRequestRepository.findById(requestId)
+                .orElseThrow(() -> new ResourceNotFoundException("Food request not found with id: " + requestId));
+
+        // Step 2: Check if the request is in the correct state to be completed
+        if (foodRequest.getRequestStatus() != RequestStatus.APPROVED) {
+            throw new IllegalStateException("Cannot complete a request that is not in APPROVED status.");
+        }
+
+        // Step 3: Update the request's status
+        foodRequest.setRequestStatus(RequestStatus.COMPLETED);
+
+        // Step 4: Get the associated hotel and update its donation total
+        Hotel hotel = foodRequest.getFoodItem().getHotel();
+        if (hotel != null) {
+            // Use the helper method we created in the Hotel entity
+            hotel.addToTotalDonated(foodRequest.getRequestedQuantity());
+
+            // Save the hotel with the updated total
+            hotelRepository.save(hotel);
+        }
+
+        // Step 5: Save the updated request
+        foodRequestRepository.save(foodRequest);
     }
 }

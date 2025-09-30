@@ -50,7 +50,17 @@ public class FoodRequestController {
         }
     }
 
-
+    @PutMapping("/{id}/complete")
+    public ResponseEntity<Void> completeRequest(@PathVariable Long id) {  // FIXED: Changed "Id" to "id"
+        try {
+            System.out.println("=== Completing request with ID: " + id + " ==="); // Debug log
+            foodRequestService.completeFoodRequest(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace(); // This will now show the actual error
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
     @GetMapping("/hotel/{hotelId}")
     public ResponseEntity<?> getRequestsForHotel(
@@ -85,5 +95,4 @@ public class FoodRequestController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
-
 }

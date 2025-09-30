@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface FoodRequestRepository extends JpaRepository<FoodRequest, Long> {
@@ -38,4 +39,5 @@ public interface FoodRequestRepository extends JpaRepository<FoodRequest, Long> 
             nativeQuery = true
     )
     Double sumDonatedQuantityByHotelAndDateRange(@Param("hotelId") Long hotelId, @Param("startDate") LocalDateTime startDate);
+    Optional<FoodRequest> findTopByFoodItemIdAndNgoIdOrderByRequestDateDesc(Long foodItemId, Long ngoId);
 }
