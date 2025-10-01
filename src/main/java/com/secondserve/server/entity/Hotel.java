@@ -17,7 +17,7 @@ public class Hotel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // --- (All of your existing fields down to 'total_food_donated' are correct) ---
+    
 
     @NotBlank
     @Column(name = "hotel_name", nullable = false)
@@ -53,24 +53,19 @@ public class Hotel {
     @Column(name = "total_food_donated")
     private BigDecimal totalFoodDonated = BigDecimal.ZERO;
 
-    // =======================================================
-    // ============== NEW SECTION STARTS HERE ==============
-    // =======================================================
-
-    // --- ADDED: The field to store the hotel's license number ---
+    
     @NotBlank
     @Column(name = "hotel_license", nullable = false, unique = true)
     private String hotelLicense;
 
-    // --- ADDED: The field to store the unique, shareable hotel code ---
+    
     @Column(name = "hotel_code", unique = true)
     private String hotelCode;
 
-    // --- ADDED: The relationship defining that one Hotel can have many KitchenStaff members ---
+    
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<KitchenStaff> staff = new ArrayList<>();
 
-    // --- (The existing relationship to FoodItem is still correct) ---
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FoodItem> foodItems;
 
@@ -78,8 +73,6 @@ public class Hotel {
     // --- Constructors ---
     public Hotel() {}
 
-    // You can remove this old constructor or update it if needed.
-    // The default constructor is usually sufficient.
     public Hotel(String hotelName, String managerName, String email, String password) {
         this.hotelName = hotelName;
         this.managerName = managerName;
@@ -113,8 +106,6 @@ public class Hotel {
     public void setStaff(List<KitchenStaff> staff) {
         this.staff = staff;
     }
-
-    // --- (The rest of your existing getters and setters are below) ---
     public void addToTotalDonated(BigDecimal amount) {
         if (this.totalFoodDonated == null) {
             this.totalFoodDonated = BigDecimal.ZERO;

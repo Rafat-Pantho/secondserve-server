@@ -32,19 +32,15 @@ public class SecurityConfig {
                 .cors(cors -> {})
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
-                        // ... (other permitAll rules are fine)
+                        
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/hotels/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/staff/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/ngos/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/food-items/available").permitAll()
                         .requestMatchers(HttpMethod.GET, "/hotels/**").permitAll()
-
-
                         .requestMatchers("/food-requests/**").permitAll()
 
-
-                        // ALL other requests MUST be authenticated
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

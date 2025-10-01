@@ -1,6 +1,6 @@
 package com.secondserve.server.controller;
 
-import com.secondserve.server.dto.DashboardStatsDto; // --- ADDED: The missing import ---
+import com.secondserve.server.dto.DashboardStatsDto; 
 import com.secondserve.server.dto.HotelDto;
 import com.secondserve.server.service.HotelService;
 import jakarta.validation.Valid;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-// NOTE: Ensure your server.properties context-path is '/api' for this to work
+
 @RequestMapping("/hotels")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class HotelController {
@@ -28,7 +28,7 @@ public class HotelController {
             HotelDto createdHotel = hotelService.registerHotel(hotelDto);
             return new ResponseEntity<>(createdHotel, HttpStatus.CREATED);
         } catch (Exception e) {
-            e.printStackTrace(); // Good for debugging
+            e.printStackTrace(); 
             return ResponseEntity.badRequest().build();
         }
     }
@@ -40,8 +40,8 @@ public class HotelController {
     // @PreAuthorize("hasRole('HOTEL_MANAGER')") // Enable security later
     public ResponseEntity<DashboardStatsDto> getDashboardStats(/* @AuthenticationPrincipal CustomUserDetails userDetails */) {
         try {
-            // Long hotelId = userDetails.getHotelId(); // Get ID securely from token in production
-            Long hotelId = 1L; // <<< --- FOR DEVELOPMENT, USE A PLACEHOLDER
+           
+            Long hotelId = 1L; // Temporary hardcoded ID for testing
 
             DashboardStatsDto stats = hotelService.getDashboardStats(hotelId);
             return ResponseEntity.ok(stats);
@@ -51,7 +51,6 @@ public class HotelController {
         }
     }
 
-    // --- (The other GET, PUT, and DELETE endpoints are perfectly fine) ---
 
     @GetMapping
     public ResponseEntity<List<HotelDto>> getAllHotels() {

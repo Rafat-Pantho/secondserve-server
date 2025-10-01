@@ -43,7 +43,6 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
             "(SELECT 1 FROM FoodItem fi WHERE fi.hotel = h AND fi.isAvailable = true)")
     List<Hotel> findActiveHotelsWithAvailableFood();
 
-    // The findByIsActiveTrue() method is still fine to keep for other purposes.
-    //List<Hotel> findByIsActiveTrue();
+   
 
 }

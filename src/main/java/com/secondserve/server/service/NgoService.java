@@ -37,8 +37,6 @@ public class NgoService {
         return convertToDto(savedNgo);
     }
 
-    // --- (All other existing service methods are perfectly fine and remain unchanged) ---
-
     public List<NgoDto> getAllActiveNgos() {
         return ngoRepository.findByIsActiveTrue()
                 .stream()
@@ -72,7 +70,7 @@ public class NgoService {
     public void deleteNgo(Long id) {
         Ngo ngo = ngoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("NGO not found with id: " + id));
-        ngo.setIsActive(false); // Soft delete is good practice.
+        ngo.setIsActive(false); 
         ngoRepository.save(ngo);
     }
 
@@ -96,7 +94,7 @@ public class NgoService {
         dto.setRegistrationDate(ngo.getRegistrationDate());
         dto.setIsActive(ngo.getIsActive());
         dto.setTotalFoodReceived(ngo.getTotalFoodReceived());
-        // Password is intentionally not included.
+        
         return dto;
     }
 

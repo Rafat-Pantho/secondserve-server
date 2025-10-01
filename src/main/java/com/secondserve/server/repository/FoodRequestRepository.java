@@ -14,13 +14,10 @@ import java.util.Optional;
 @Repository
 public interface FoodRequestRepository extends JpaRepository<FoodRequest, Long> {
 
-    // --- (Other existing methods like findByNgoIdOrderByRequestDateDesc can stay) ---
     List<FoodRequest> findByNgoIdOrderByRequestDateDesc(Long ngoId);
     List<FoodRequest> findByFoodItemHotelIdOrderByRequestDateDesc(Long hotelId);
 
 
-    // --- THIS IS THE NEW NATIVE SQL QUERY ---
-    // It bypasses Hibernate's complex processing and is much more direct.
     @Query(
 
             value = "SELECT fr.* FROM food_requests_table fr " +

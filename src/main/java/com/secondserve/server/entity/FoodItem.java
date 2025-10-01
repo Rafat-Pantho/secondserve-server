@@ -12,8 +12,6 @@ import java.util.List;
 @Table(name = "food_items_table")
 public class FoodItem {
 
-    // --- ENUMS DEFINED INTERNALLY (The Correct Way) ---
-    // These names (PREPARED_FOOD, FRESH, etc.) will be saved directly to the database.
     public enum Category {
         PREPARED_FOOD,
         INGREDIENTS

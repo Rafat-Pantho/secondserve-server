@@ -23,7 +23,7 @@ public class AuthService {
     @Autowired
     private NgoRepository ngoRepository;
 
-    // --- ADDED: Dependency for the kitchen staff database table ---
+   
     @Autowired
     private KitchenStaffRepository kitchenStaffRepository;
 
@@ -33,7 +33,7 @@ public class AuthService {
     @Autowired
     private JwtUtil jwtUtil;
 
-    // Inside your AuthService.java file
+   
 
     public AuthResponse login(LoginRequest loginRequest) {
         if (loginRequest.getUserType() == null) {
@@ -56,7 +56,7 @@ public class AuthService {
 
                 String hotelToken = jwtUtil.generateToken(hotel.getEmail(), "HOTEL_MANAGER", hotel.getId());
 
-                // --- MODIFIED PART ---
+    
                 // Create the response object and then set the specific organization name.
                 AuthResponse hotelResponse = new AuthResponse(hotelToken, "HOTEL_MANAGER", hotel.getId(), hotel.getManagerName(), hotel.getEmail());
                 hotelResponse.setOrganizationName(hotel.getHotelName()); // Add the hotel name
@@ -75,7 +75,6 @@ public class AuthService {
 
                 String ngoToken = jwtUtil.generateToken(ngo.getEmail(), "NGO", ngo.getId());
 
-                // --- MODIFIED PART ---
                 AuthResponse ngoResponse = new AuthResponse(ngoToken, "NGO", ngo.getId(), ngo.getContactPerson(), ngo.getEmail());
                 ngoResponse.setOrganizationName(ngo.getNgoName()); // Add the NGO name
                 return ngoResponse;

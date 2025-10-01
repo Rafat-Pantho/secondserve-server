@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-// MODIFIED: Base path now includes /api for consistency with the server's context path.
+
 @RequestMapping("/ngos")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class NgoController {
@@ -18,9 +18,7 @@ public class NgoController {
     @Autowired
     private NgoService ngoService;
 
-    /**
-     * ADDED: This is the new, dedicated endpoint for NGO registration.
-     */
+    
     @PostMapping("/register")
     public ResponseEntity<NgoDto> registerNgo(@Valid @RequestBody NgoDto ngoDto) {
         try {
@@ -32,7 +30,6 @@ public class NgoController {
         }
     }
 
-    // --- (The other endpoints you had are perfect for CRUD operations and are kept) ---
 
     @GetMapping
     public ResponseEntity<List<NgoDto>> getAllNgos() {

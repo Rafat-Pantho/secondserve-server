@@ -22,10 +22,9 @@ public class HotelDto {
     
     private String hotelLicense;
 
-    // --- ADDED: The field to hold the generated hotel code ---
+    
     private String hotelCode;
 
-    // Optional fields for profile management
     private String phone;
     private String city;
     private String state;
@@ -58,7 +57,6 @@ public class HotelDto {
     public String getHotelLicense() { return hotelLicense; }
     public void setHotelLicense(String hotelLicense) { this.hotelLicense = hotelLicense; }
 
-    // --- ADDED: The required getter and setter that were missing ---
     public String getHotelCode() { return hotelCode; }
     public void setHotelCode(String hotelCode) { this.hotelCode = hotelCode; }
 

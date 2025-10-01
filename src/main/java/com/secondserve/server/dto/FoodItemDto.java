@@ -1,6 +1,6 @@
 package com.secondserve.server.dto;
 
-import com.secondserve.server.entity.FoodItem; // Required for using the Enums
+import com.secondserve.server.entity.FoodItem; 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -16,12 +16,12 @@ public class FoodItemDto {
 
     // These fields are mostly used for sending data FROM server TO client
     private Long id;
-    private Long hotelId; // Can be removed from request DTO, but useful for response
+    private Long hotelId; 
     private String hotelName;
     private Boolean isAvailable;
     private LocalDateTime createdDate;
     private String currentUserRequestStatus;
-    // --- These fields PERFECTLY MATCH the data sent FROM the Kitchen Staff's FXML ---
+    // These fields are used for both requests and responses
     @NotBlank(message = "Food name is required")
     private String foodName;
 
@@ -29,7 +29,7 @@ public class FoodItemDto {
     @Positive(message = "Quantity must be positive")
     private BigDecimal quantity;
 
-    @NotBlank(message = "Unit is required") // Unit is now essential
+    @NotBlank(message = "Unit is required") 
     private String unit;
 
     @NotNull(message = "Expiry date is required")
@@ -38,17 +38,14 @@ public class FoodItemDto {
     // Optional notes field
     private String description;
 
-    // --- ADDED: These fields replace the old 'foodType' ---
+    
     @NotNull(message = "Category is required")
     private FoodItem.Category category;
 
     @NotNull(message = "Condition is required")
     private FoodItem.Condition condition;
 
-    // --- DELETED: The following fields have been removed as they are no longer in the database or FXML ---
-    // - private FoodType foodType;
-    // - private BigDecimal amountInKg;
-    // - private LocalDateTime preparationTime;
+   
 
 
     // --- Constructors, Getters, and Setters ---
@@ -56,13 +53,13 @@ public class FoodItemDto {
     public FoodItemDto() {}
 
     // Getters and Setters for all remaining fields...
-    // You can generate these in your IDE (Alt+Insert or Right Click -> Generate)
+    
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
     public Long getHotelId() { return hotelId; }
-    // Note: We don't need a setHotelId because the server should determine this, not the client.
+    
     public void setHotelId(Long hotelId) { this.hotelId = hotelId; }
 
     public String getHotelName() { return hotelName; }

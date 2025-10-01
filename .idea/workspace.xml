@@ -6,15 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="ba250f8e-e91e-4fa2-bbfa-c94671563887" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/controller/FoodItemController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/controller/FoodItemController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/controller/FoodRequestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/controller/FoodRequestController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/dto/FoodItemDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/dto/FoodItemDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/entity/Hotel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/entity/Hotel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/repository/FoodRequestRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/repository/FoodRequestRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/service/FoodItemService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/service/FoodItemService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/service/FoodRequestService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/service/FoodRequestService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/secondserve/server/service/HotelService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/secondserve/server/service/HotelService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

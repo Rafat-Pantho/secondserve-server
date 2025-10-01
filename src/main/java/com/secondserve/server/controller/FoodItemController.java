@@ -17,7 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/food-items") // Using the /api prefix
+@RequestMapping("/food-items") 
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class FoodItemController {
 
@@ -70,8 +70,7 @@ public class FoodItemController {
     @PostMapping
     public ResponseEntity<FoodItemDto> createFoodItem(@Valid @RequestBody FoodItemDto foodItemDto) {
         try {
-            // Using placeholder hotel ID for now.
-            // In a real app, this would come from the logged-in user's security token.
+            
             Long hotelIdOfLoggedInUser = 1L;
             FoodItemDto createdFoodItem = foodItemService.createFoodItem(foodItemDto, hotelIdOfLoggedInUser);
             return new ResponseEntity<>(createdFoodItem, HttpStatus.CREATED);
@@ -111,7 +110,7 @@ public class FoodItemController {
         }
     }
     @PutMapping("/{id}/approve")
-// @PreAuthorize("hasRole('HOTEL_MANAGER')") // Enable this when security is complete
+
     public ResponseEntity<Void> approveFoodItem(@PathVariable Long id) {
         try {
             foodItemService.markAsAvailable(id); // We'll need to create this service method

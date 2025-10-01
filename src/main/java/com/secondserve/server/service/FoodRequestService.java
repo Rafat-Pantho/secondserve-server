@@ -104,11 +104,6 @@ public class FoodRequestService {
                 .collect(Collectors.toList());
     }
 
-    // You could also add other necessary methods here, such as:
-    // public FoodRequestDto getFoodRequestById(Long id) { ... }
-    // public void deleteFoodRequest(Long id) { ... }
-
-    // --- Helper Methods for Data Conversion ---
 
     private FoodRequestDto convertToDto(FoodRequest request) {
         FoodRequestDto dto = new FoodRequestDto();

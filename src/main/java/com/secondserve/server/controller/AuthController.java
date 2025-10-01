@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-// MODIFIED: Base path now includes /api for consistency with server context path
+
 @RequestMapping("/auth")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class AuthController {
@@ -17,8 +17,6 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    // --- MODIFIED: All other service dependencies and registration endpoints have been removed. ---
-    // The sole responsibility of this controller is now authentication (login).
 
     /**
      * Authenticates a user (Hotel Manager, Kitchen Staff, or NGO) and returns a JWT.
@@ -31,9 +29,9 @@ public class AuthController {
             AuthResponse authResponse = authService.login(loginRequest);
             return ResponseEntity.ok(authResponse);
         } catch (Exception e) {
-            // It's good practice to log the error and return a specific status if possible
+           
             e.printStackTrace(); // Helpful for debugging
-            // For security, you might return 401 Unauthorized for bad credentials
+            
             return ResponseEntity.status(401).build();
         }
     }

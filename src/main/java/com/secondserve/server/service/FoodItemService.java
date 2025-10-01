@@ -55,8 +55,7 @@ public class FoodItemService {
         }).collect(Collectors.toList());
     }
 
-    // --- REMOVED: This method caused a compilation error because we deleted the underlying repository query. ---
-    // public List<FoodItemDto> getAvailableFoodItemsByCity(String city) { ... }
+    
 
     public FoodItemDto getFoodItemById(Long id) {
         FoodItem foodItem = foodItemRepository.findById(id)
@@ -64,7 +63,6 @@ public class FoodItemService {
         return convertToDto(foodItem);
     }
 
-    // --- MODIFIED: Method signature changed to be more secure and logical ---
     public FoodItemDto createFoodItem(FoodItemDto foodItemDto, Long hotelIdOfLoggedInStaff) {
         Hotel hotel = hotelRepository.findById(hotelIdOfLoggedInStaff)
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel for user not found with id: " + hotelIdOfLoggedInStaff));
@@ -114,7 +112,7 @@ public class FoodItemService {
         foodItemRepository.deleteById(id);
     }
 
-    // --- MODIFIED: This helper now uses the new fields ---
+ 
     private FoodItemDto convertToDto(FoodItem foodItem) {
         FoodItemDto dto = new FoodItemDto();
         dto.setId(foodItem.getId());
@@ -140,7 +138,7 @@ public class FoodItemService {
         foodItem.setIsAvailable(true); // Set the flag to true
         foodItemRepository.save(foodItem);
     }
-    // --- MODIFIED: This helper now uses the new fields ---
+   
     private FoodItem convertToEntity(FoodItemDto dto) {
         FoodItem foodItem = new FoodItem();
         foodItem.setFoodName(dto.getFoodName());
@@ -165,7 +163,7 @@ public class FoodItemService {
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
-    // Add this method to FoodItemService class:
+    
 
     public List<FoodItemDto> getTodaysFoodItemsByHotel(Long hotelId) {
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();

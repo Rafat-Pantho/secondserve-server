@@ -30,7 +30,7 @@ public class HotelService {
         Hotel hotel = hotelRepository.findById(hotelId)
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel not found with id: " + hotelId));
 
-        // --- SIMPLIFIED LOGIC FOR DASHBOARD ---
+       
 
         // Calculate 'logged' food as before
         LocalDateTime startOfWeek = LocalDateTime.now().with(DayOfWeek.MONDAY).toLocalDate().atStartOfDay();
@@ -38,8 +38,8 @@ public class HotelService {
 
         DashboardStatsDto statsDto = new DashboardStatsDto();
 
-        // **MODIFIED:** Get the 'donated' total directly from the hotel's stored field.
-        // This is now the single source of truth for all completed donations.
+        // Get the 'donated' total directly from the hotel's stored field.
+        
         statsDto.setTotalDonatedThisWeek(hotel.getTotalFoodDonated());
 
         // 'Logged this week' remains the same

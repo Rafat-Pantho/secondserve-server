@@ -33,6 +33,6 @@ public interface NgoRepository extends JpaRepository<Ngo, Long> {
     List<Ngo> findByIsActiveTrue();
 
 
-    // --- REMOVED: The findActiveByCity method has been deleted as it is no longer used in the application. ---
+    
 
 }
